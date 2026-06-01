@@ -324,6 +324,23 @@
     }
     .project-card:hover .project-arrow { transform: translate(3px, -3px); color: var(--accent); }
 
+    .project-links { display: flex; gap: .8rem; margin-top: 1.4rem; flex-wrap: wrap; }
+    .project-link {
+      font-family: var(--mono);
+      font-size: .78rem;
+      letter-spacing: .04em;
+      text-decoration: none;
+      padding: .5rem 1rem;
+      border-radius: 4px;
+      transition: all .2s;
+      position: relative;
+      z-index: 1;
+    }
+    .project-link.demo { background: var(--accent); color: #fff; border: 1px solid var(--accent); }
+    .project-link.demo:hover { background: transparent; color: var(--accent); }
+    .project-link.code { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+    .project-link.code:hover { color: var(--text); border-color: #444; }
+
     /* ── TOOLS ── */
     .tools-grid {
       display: grid;
@@ -467,8 +484,7 @@
   <p class="section-sub">Des projets open-source, locaux et orientés productivité.</p>
 
   <div class="projects-grid">
-    <a href="https://github.com/tourneurmaxime/maxos" target="_blank" class="project-card">
-      <span class="project-arrow">↗</span>
+    <div class="project-card">
       <span class="project-tag">featured</span>
       <h3>MaxOS</h3>
       <p>Un OS agentique local-first : interface Nuxt pilotant des sous-agents Claude CLI via PTY. Kanban, skills, mémoire persistante, remote control via JWT.</p>
@@ -479,7 +495,11 @@
         <span class="tech-pill">node-pty</span>
         <span class="tech-pill">Claude CLI</span>
       </div>
-    </a>
+      <div class="project-links">
+        <a href="https://tourneur-maxime.github.io/max_ai_os/" target="_blank" class="project-link demo">▶ Démo live</a>
+        <a href="https://github.com/tourneur-maxime/max_ai_os" target="_blank" class="project-link code">Code ↗</a>
+      </div>
+    </div>
   </div>
 </section>
 
