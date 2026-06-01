@@ -259,6 +259,8 @@
       transition: all .25s;
       position: relative;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
 
     .project-card::after {
@@ -326,7 +328,7 @@
     }
     .project-card:hover .project-arrow { transform: translate(3px, -3px); color: var(--accent); }
 
-    .project-links { display: flex; gap: .8rem; margin-top: 1.4rem; flex-wrap: wrap; }
+    .project-links { display: flex; gap: .8rem; margin-top: auto; padding-top: 1.4rem; flex-wrap: wrap; }
     .project-link {
       font-family: var(--mono);
       font-size: .78rem;
