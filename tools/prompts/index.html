@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prompt Builder — Maxime Tourneur</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0a;
+      --bg2: #111111;
+      --bg3: #1a1a1a;
+      --border: #222222;
+      --accent: #E07A5F;
+      --green: #3ddc84;
+      --text: #e8e8e8;
+      --muted: #666;
+      --mono: 'JetBrains Mono', monospace;
+      --sans: 'Inter', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.012) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.012) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      height: 56px;
+      background: rgba(10,10,10,.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo { font-family: var(--mono); font-size: .85rem; color: var(--accent); text-decoration: none; }
+    .nav-logo span { color: var(--muted); }
+    .nav-back { font-family: var(--mono); font-size: .8rem; color: var(--muted); text-decoration: none; transition: color .2s; }
+    .nav-back:hover { color: var(--text); }
+
+    main {
+      position: relative;
+      z-index: 1;
+      flex: 1;
+      padding: 4rem clamp(1.5rem, 6vw, 8rem);
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .page-header { margin-bottom: 3rem; }
+    .page-tag { font-family: var(--mono); font-size: .75rem; color: var(--accent); letter-spacing: .12em; text-transform: uppercase; margin-bottom: .8rem; }
+    h1 { font-family: var(--mono); font-size: clamp(1.8rem, 3vw, 2.4rem); font-weight: 700; margin-bottom: .6rem; }
+    .page-desc { color: var(--muted); font-size: .95rem; max-width: 560px; }
+
+    .builder {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    @media (max-width: 800px) { .builder { grid-template-columns: 1fr; } }
+
+    .panel {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 2rem;
+    }
+
+    .panel-title {
+      font-family: var(--mono);
+      font-size: .8rem;
+      color: var(--accent);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      margin-bottom: 1.6rem;
+      padding-bottom: .8rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .field { margin-bottom: 1.4rem; }
+
+    label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--mono);
+      font-size: .8rem;
+      color: var(--muted);
+      margin-bottom: .5rem;
+    }
+    label strong { color: var(--text); font-weight: 400; }
+    .optional { font-size: .7rem; color: #444; }
+
+    textarea, input[type="text"], select {
+      width: 100%;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: .9rem;
+      padding: .65rem .9rem;
+      outline: none;
+      transition: border-color .2s;
+      resize: vertical;
+    }
+    textarea:focus, input[type="text"]:focus, select:focus { border-color: var(--accent); }
+    select { cursor: pointer; }
+
+    textarea { min-height: 72px; }
+
+    .model-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+    }
+
+    .chip {
+      font-family: var(--mono);
+      font-size: .75rem;
+      padding: .3rem .7rem;
+      border-radius: 99px;
+      border: 1px solid var(--border);
+      background: var(--bg3);
+      color: var(--muted);
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .chip:hover { color: var(--text); border-color: #444; }
+    .chip.active { background: rgba(224,122,95,.15); border-color: var(--accent); color: var(--accent); }
+
+    .format-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .5rem;
+    }
+
+    .format-btn {
+      font-family: var(--mono);
+      font-size: .75rem;
+      padding: .45rem;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: var(--bg3);
+      color: var(--muted);
+      cursor: pointer;
+      text-align: center;
+      transition: all .15s;
+    }
+    .format-btn:hover { color: var(--text); border-color: #444; }
+    .format-btn.active { background: rgba(224,122,95,.15); border-color: var(--accent); color: var(--accent); }
+
+    /* PREVIEW */
+    .preview-panel { position: sticky; top: 76px; }
+
+    .preview-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.6rem;
+      padding-bottom: .8rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .preview-title {
+      font-family: var(--mono);
+      font-size: .8rem;
+      color: var(--accent);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    .preview-actions { display: flex; gap: .6rem; }
+
+    .btn-copy, .btn-reset {
+      font-family: var(--mono);
+      font-size: .75rem;
+      padding: .3rem .8rem;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all .15s;
+    }
+
+    .btn-copy {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    .btn-copy:hover { background: transparent; color: var(--accent); }
+
+    .btn-reset {
+      background: transparent;
+      color: var(--muted);
+    }
+    .btn-reset:hover { color: var(--text); border-color: #444; }
+
+    .preview-box {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.4rem;
+      font-family: var(--mono);
+      font-size: .82rem;
+      line-height: 1.75;
+      color: var(--text);
+      min-height: 200px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .preview-box .section-head {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .preview-box .placeholder {
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .preview-stats {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+    .stat { font-family: var(--mono); font-size: .75rem; color: var(--muted); }
+    .stat span { color: var(--text); }
+
+    .copy-toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--green);
+      color: #000;
+      font-family: var(--mono);
+      font-size: .8rem;
+      padding: .5rem 1.2rem;
+      border-radius: 99px;
+      opacity: 0;
+      transition: all .3s;
+      pointer-events: none;
+    }
+    .copy-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    footer {
+      position: relative; z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 1.5rem clamp(1.5rem, 6vw, 8rem);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    footer a { font-family: var(--mono); font-size: .78rem; color: var(--muted); text-decoration: none; }
+    footer a:hover { color: var(--text); }
+    footer span { font-family: var(--mono); font-size: .78rem; color: var(--muted); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="../../index.html" class="nav-logo">~<span>/</span>mtourneur</a>
+  <a href="../../index.html#tools" class="nav-back">← outils</a>
+</nav>
+
+<main>
+  <div class="page-header">
+    <div class="page-tag">// outil #2</div>
+    <h1>✨ Prompt Builder</h1>
+    <p class="page-desc">Construis des prompts structurés et réutilisables pour Claude, GPT ou Gemini. Prévisualisation en temps réel.</p>
+  </div>
+
+  <div class="builder">
+    <!-- FORM -->
+    <div class="panel">
+      <div class="panel-title">Construction du prompt</div>
+
+      <div class="field">
+        <label><strong>Modèle cible</strong></label>
+        <div class="model-chips">
+          <button class="chip active" data-model="Claude">Claude</button>
+          <button class="chip" data-model="GPT-4o">GPT-4o</button>
+          <button class="chip" data-model="Gemini">Gemini</button>
+          <button class="chip" data-model="Mistral">Mistral</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>
+          <strong>Rôle / Persona</strong>
+          <span class="optional">optionnel</span>
+        </label>
+        <input type="text" id="role" placeholder="ex: Tu es un expert en TypeScript et architecture backend…">
+      </div>
+
+      <div class="field">
+        <label>
+          <strong>Contexte</strong>
+          <span class="optional">optionnel</span>
+        </label>
+        <textarea id="context" placeholder="ex: Je travaille sur une API REST avec Express et SQLite. Les endpoints doivent être typés et testés…"></textarea>
+      </div>
+
+      <div class="field">
+        <label><strong>Tâche</strong></label>
+        <textarea id="task" placeholder="ex: Génère un middleware d'authentification JWT qui vérifie le token dans le header Authorization…" style="min-height:100px"></textarea>
+      </div>
+
+      <div class="field">
+        <label>
+          <strong>Contraintes</strong>
+          <span class="optional">une par ligne</span>
+        </label>
+        <textarea id="constraints" placeholder="ex:&#10;- Pas de dépendances externes&#10;- Gestion d'erreurs explicite&#10;- Commentaires uniquement si non évident"></textarea>
+      </div>
+
+      <div class="field">
+        <label>
+          <strong>Format de sortie</strong>
+          <span class="optional">optionnel</span>
+        </label>
+        <div class="format-grid">
+          <button class="format-btn" data-fmt="Code uniquement">Code uniquement</button>
+          <button class="format-btn active" data-fmt="Code + explications">Code + explications</button>
+          <button class="format-btn" data-fmt="Bullet points">Bullet points</button>
+          <button class="format-btn" data-fmt="Markdown structuré">Markdown structuré</button>
+          <button class="format-btn" data-fmt="JSON">JSON</button>
+          <button class="format-btn" data-fmt="Étape par étape">Étape par étape</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>
+          <strong>Exemples</strong>
+          <span class="optional">optionnel — input/output attendu</span>
+        </label>
+        <textarea id="examples" placeholder="ex: Input: getUserById(42)&#10;Output: { id: 42, name: 'Alice', role: 'admin' }"></textarea>
+      </div>
+    </div>
+
+    <!-- PREVIEW -->
+    <div class="panel preview-panel">
+      <div class="preview-header">
+        <span class="preview-title">Prévisualisation</span>
+        <div class="preview-actions">
+          <button class="btn-reset" onclick="resetAll()">Effacer</button>
+          <button class="btn-copy" onclick="copyPrompt()">Copier →</button>
+        </div>
+      </div>
+
+      <div class="preview-box" id="preview">
+        <span class="placeholder">Commence à remplir les champs pour voir ton prompt apparaître ici…</span>
+      </div>
+
+      <div class="preview-stats">
+        <div class="stat">Mots : <span id="stat-words">0</span></div>
+        <div class="stat">Chars : <span id="stat-chars">0</span></div>
+        <div class="stat">~Tokens : <span id="stat-tokens">0</span></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <span>L'estimation des tokens est approximative (~4 chars/token)</span>
+  <a href="../../index.html">← retour</a>
+</footer>
+
+<div class="copy-toast" id="toast">✓ Copié dans le presse-papiers</div>
+
+<script>
+  let selectedModel = 'Claude';
+  let selectedFormat = 'Code + explications';
+
+  // Model chips
+  document.querySelectorAll('[data-model]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('[data-model]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedModel = btn.dataset.model;
+      renderPreview();
+    });
+  });
+
+  // Format buttons
+  document.querySelectorAll('[data-fmt]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('[data-fmt]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedFormat = btn.dataset.fmt;
+      renderPreview();
+    });
+  });
+
+  // Inputs
+  ['role', 'context', 'task', 'constraints', 'examples'].forEach(id => {
+    document.getElementById(id).addEventListener('input', renderPreview);
+  });
+
+  function buildPrompt() {
+    const role = document.getElementById('role').value.trim();
+    const context = document.getElementById('context').value.trim();
+    const task = document.getElementById('task').value.trim();
+    const constraints = document.getElementById('constraints').value.trim();
+    const examples = document.getElementById('examples').value.trim();
+
+    let parts = [];
+
+    if (role) parts.push(`## Rôle\n${role}`);
+    if (context) parts.push(`## Contexte\n${context}`);
+    if (task) parts.push(`## Tâche\n${task}`);
+
+    if (constraints) {
+      const lines = constraints.split('\n').filter(l => l.trim());
+      const formatted = lines.map(l => l.startsWith('-') ? l : '- ' + l).join('\n');
+      parts.push(`## Contraintes\n${formatted}`);
+    }
+
+    if (selectedFormat) parts.push(`## Format de sortie\n${selectedFormat}`);
+
+    if (examples) parts.push(`## Exemples\n${examples}`);
+
+    return parts.join('\n\n');
+  }
+
+  function renderPreview() {
+    const prompt = buildPrompt();
+    const box = document.getElementById('preview');
+
+    if (!prompt) {
+      box.innerHTML = '<span class="placeholder">Commence à remplir les champs pour voir ton prompt apparaître ici…</span>';
+      document.getElementById('stat-words').textContent = '0';
+      document.getElementById('stat-chars').textContent = '0';
+      document.getElementById('stat-tokens').textContent = '0';
+      return;
+    }
+
+    // Syntax highlight sections
+    const highlighted = prompt
+      .replace(/^(## .+)$/gm, '<span class="section-head">$1</span>');
+
+    box.innerHTML = highlighted;
+
+    const words = prompt.split(/\s+/).filter(Boolean).length;
+    const chars = prompt.length;
+    const tokens = Math.round(chars / 4);
+
+    document.getElementById('stat-words').textContent = words;
+    document.getElementById('stat-chars').textContent = chars;
+    document.getElementById('stat-tokens').textContent = '~' + tokens;
+  }
+
+  function copyPrompt() {
+    const prompt = buildPrompt();
+    if (!prompt) return;
+    navigator.clipboard.writeText(prompt).then(() => {
+      const toast = document.getElementById('toast');
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2200);
+    });
+  }
+
+  function resetAll() {
+    ['role', 'context', 'task', 'constraints', 'examples'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+    renderPreview();
+  }
+
+  renderPreview();
+</script>
+</body>
+</html>

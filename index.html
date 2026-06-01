@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maxime Tourneur</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0a;
+      --bg2: #111111;
+      --bg3: #1a1a1a;
+      --border: #222222;
+      --accent: #E07A5F;
+      --green: #3ddc84;
+      --text: #e8e8e8;
+      --muted: #666;
+      --mono: 'JetBrains Mono', monospace;
+      --sans: 'Inter', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.015) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      height: 56px;
+      background: rgba(10,10,10,.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: .85rem;
+      color: var(--accent);
+      text-decoration: none;
+      letter-spacing: .05em;
+    }
+
+    .nav-logo span { color: var(--muted); }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 2rem;
+    }
+
+    nav ul a {
+      font-family: var(--mono);
+      font-size: .8rem;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: .08em;
+      transition: color .2s;
+    }
+    nav ul a:hover { color: var(--text); }
+
+    /* ── HERO ── */
+    #hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 0 clamp(2rem, 8vw, 10rem);
+      z-index: 1;
+    }
+
+    .hero-inner { max-width: 720px; }
+
+    .hero-prefix {
+      font-family: var(--mono);
+      font-size: .9rem;
+      color: var(--accent);
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .hero-prefix::before {
+      content: '';
+      display: inline-block;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: .4; }
+    }
+
+    h1 {
+      font-family: var(--mono);
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -.02em;
+      margin-bottom: 1.2rem;
+    }
+
+    h1 .cursor {
+      display: inline-block;
+      width: 3px;
+      height: 1em;
+      background: var(--accent);
+      margin-left: 4px;
+      vertical-align: text-bottom;
+      animation: blink .9s step-end infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .hero-desc {
+      font-size: 1.15rem;
+      color: var(--muted);
+      max-width: 520px;
+      margin-bottom: 2.4rem;
+      line-height: 1.75;
+    }
+
+    .hero-desc strong { color: var(--text); font-weight: 600; }
+
+    .btn-group { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+    .btn {
+      font-family: var(--mono);
+      font-size: .85rem;
+      letter-spacing: .06em;
+      padding: .65rem 1.4rem;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: all .2s;
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      border: 1px solid var(--accent);
+    }
+    .btn-primary:hover { background: transparent; color: var(--accent); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { color: var(--text); border-color: #444; }
+
+    .hero-stats {
+      display: flex;
+      gap: 2.5rem;
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .stat-item { display: flex; flex-direction: column; }
+    .stat-value {
+      font-family: var(--mono);
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .stat-label {
+      font-size: .75rem;
+      color: var(--muted);
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+
+    /* ── SECTIONS ── */
+    section {
+      position: relative;
+      z-index: 1;
+      padding: 6rem clamp(2rem, 8vw, 10rem);
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: .8rem;
+      color: var(--accent);
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      margin-bottom: .8rem;
+    }
+
+    .section-label::before { content: '// '; color: var(--muted); }
+
+    h2 {
+      font-family: var(--sans);
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 700;
+      margin-bottom: .6rem;
+    }
+
+    .section-sub {
+      color: var(--muted);
+      font-size: .95rem;
+      margin-bottom: 3rem;
+    }
+
+    /* ── PROJECTS ── */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .project-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.8rem;
+      text-decoration: none;
+      color: inherit;
+      transition: all .25s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--accent) 0%, transparent 50%);
+      opacity: 0;
+      transition: opacity .3s;
+    }
+
+    .project-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-3px);
+    }
+    .project-card:hover::after { opacity: .04; }
+
+    .project-tag {
+      font-family: var(--mono);
+      font-size: .7rem;
+      color: var(--accent);
+      background: rgba(224,122,95,.12);
+      border: 1px solid rgba(224,122,95,.25);
+      padding: .2rem .6rem;
+      border-radius: 99px;
+      display: inline-block;
+      margin-bottom: 1rem;
+    }
+
+    .project-card h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: .5rem;
+    }
+
+    .project-card p {
+      font-size: .9rem;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 1.2rem;
+    }
+
+    .project-tech {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem;
+    }
+
+    .tech-pill {
+      font-family: var(--mono);
+      font-size: .7rem;
+      color: var(--muted);
+      background: var(--bg3);
+      padding: .2rem .5rem;
+      border-radius: 3px;
+    }
+
+    .project-arrow {
+      position: absolute;
+      top: 1.8rem;
+      right: 1.8rem;
+      font-size: 1.2rem;
+      color: var(--muted);
+      transition: transform .2s, color .2s;
+    }
+    .project-card:hover .project-arrow { transform: translate(3px, -3px); color: var(--accent); }
+
+    /* ── TOOLS ── */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .tool-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 2rem;
+      text-decoration: none;
+      color: inherit;
+      transition: all .25s;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .tool-card:hover {
+      border-color: #444;
+      transform: translateY(-2px);
+    }
+
+    .tool-icon {
+      width: 44px; height: 44px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+    }
+
+    .tool-card h3 {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .tool-card p {
+      font-size: .88rem;
+      color: var(--muted);
+      line-height: 1.6;
+      flex: 1;
+    }
+
+    .tool-link {
+      font-family: var(--mono);
+      font-size: .75rem;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+    }
+
+    .tool-card-placeholder {
+      opacity: .4;
+      cursor: default;
+      border-style: dashed;
+    }
+    .tool-card-placeholder:hover { transform: none; border-color: var(--border); }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 2rem clamp(2rem, 8vw, 10rem);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    footer .mono { font-family: var(--mono); font-size: .8rem; color: var(--muted); }
+
+    .footer-links { display: flex; gap: 1.5rem; }
+    .footer-links a {
+      font-family: var(--mono);
+      font-size: .8rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color .2s;
+    }
+    .footer-links a:hover { color: var(--text); }
+
+    @media (max-width: 600px) {
+      nav ul { gap: 1rem; }
+      .hero-stats { gap: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">~<span>/</span>tourneurmaxime</a>
+  <ul>
+    <li><a href="#projects">projets</a></li>
+    <li><a href="#tools">outils</a></li>
+    <li><a href="https://github.com/tourneurmaxime" target="_blank">github</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-inner">
+    <div class="hero-prefix">online &amp; disponible</div>
+    <h1>Maxime Tourneur<span class="cursor"></span></h1>
+    <p class="hero-desc">
+      Je construis des <strong>systèmes agentiques</strong> et des <strong>outils pour développeurs</strong>.
+      Passionné par l'IA locale, les architectures event-driven et les interfaces qui font gagner du temps.
+    </p>
+    <div class="btn-group">
+      <a href="#tools" class="btn btn-primary">▶ Voir les outils</a>
+      <a href="https://github.com/tourneurmaxime" target="_blank" class="btn btn-ghost">GitHub →</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <span class="stat-value">3+</span>
+        <span class="stat-label">outils en prod</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">local</span>
+        <span class="stat-label">first</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">0</span>
+        <span class="stat-label">bullshit</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-label">projets</div>
+  <h2>Ce que je construis</h2>
+  <p class="section-sub">Des projets open-source, locaux et orientés productivité.</p>
+
+  <div class="projects-grid">
+    <a href="https://github.com/tourneurmaxime/maxos" target="_blank" class="project-card">
+      <span class="project-arrow">↗</span>
+      <span class="project-tag">featured</span>
+      <h3>MaxOS</h3>
+      <p>Un OS agentique local-first : interface Nuxt pilotant des sous-agents Claude CLI via PTY. Kanban, skills, mémoire persistante, remote control via JWT.</p>
+      <div class="project-tech">
+        <span class="tech-pill">TypeScript</span>
+        <span class="tech-pill">Nuxt 3</span>
+        <span class="tech-pill">SQLite</span>
+        <span class="tech-pill">node-pty</span>
+        <span class="tech-pill">Claude CLI</span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- TOOLS -->
+<section id="tools">
+  <div class="section-label">outils</div>
+  <h2>Dev tools</h2>
+  <p class="section-sub">Des outils que j'utilise ou que j'aurais aimé trouver tout faits.</p>
+
+  <div class="tools-grid">
+    <a href="tools/vape/index.html" class="tool-card">
+      <div class="tool-icon">🧪</div>
+      <h3>Calculateur DIY Vape</h3>
+      <p>Calcule les volumes exacts de base nicotinée, d'arôme, VG et PG pour ta recette e-liquide. Taux de nicotine et ratio personnalisables.</p>
+      <span class="tool-link">Ouvrir l'outil →</span>
+    </a>
+
+    <a href="tools/prompts/index.html" class="tool-card">
+      <div class="tool-icon">✨</div>
+      <h3>Prompt Builder</h3>
+      <p>Construis des prompts structurés pour Claude ou GPT. Rôle, contexte, tâche, contraintes, format. Prévisualisation en temps réel + copie rapide.</p>
+      <span class="tool-link">Ouvrir l'outil →</span>
+    </a>
+
+    <div class="tool-card tool-card-placeholder">
+      <div class="tool-icon">+</div>
+      <h3>Bientôt</h3>
+      <p>Un prochain outil en cours de construction.</p>
+      <span class="tool-link">en construction…</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="mono">tourneur.maxime@gmail.com</span>
+  <div class="footer-links">
+    <a href="https://github.com/tourneurmaxime" target="_blank">GitHub</a>
+    <a href="mailto:tourneur.maxime@gmail.com">Email</a>
+  </div>
+</footer>
+
+</body>
+</html>

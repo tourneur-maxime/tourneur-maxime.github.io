@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculateur DIY Vape — Maxime Tourneur</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0a;
+      --bg2: #111111;
+      --bg3: #1a1a1a;
+      --border: #222222;
+      --accent: #E07A5F;
+      --green: #3ddc84;
+      --blue: #5f8be0;
+      --yellow: #e0c45f;
+      --text: #e8e8e8;
+      --muted: #666;
+      --mono: 'JetBrains Mono', monospace;
+      --sans: 'Inter', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.012) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.012) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      height: 56px;
+      background: rgba(10,10,10,.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: .85rem;
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--muted); }
+
+    .nav-back {
+      font-family: var(--mono);
+      font-size: .8rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color .2s;
+    }
+    .nav-back:hover { color: var(--text); }
+
+    main {
+      position: relative;
+      z-index: 1;
+      flex: 1;
+      padding: 4rem clamp(1.5rem, 6vw, 8rem);
+      max-width: 1100px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .page-header { margin-bottom: 3rem; }
+
+    .page-tag {
+      font-family: var(--mono);
+      font-size: .75rem;
+      color: var(--accent);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-bottom: .8rem;
+    }
+
+    h1 {
+      font-family: var(--mono);
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      font-weight: 700;
+      margin-bottom: .6rem;
+    }
+
+    .page-desc {
+      color: var(--muted);
+      font-size: .95rem;
+      max-width: 560px;
+    }
+
+    .calculator {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    @media (max-width: 700px) {
+      .calculator { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 2rem;
+    }
+
+    .panel-title {
+      font-family: var(--mono);
+      font-size: .8rem;
+      color: var(--accent);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      margin-bottom: 1.6rem;
+      padding-bottom: .8rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .field { margin-bottom: 1.4rem; }
+
+    label {
+      display: block;
+      font-size: .82rem;
+      color: var(--muted);
+      margin-bottom: .5rem;
+      font-family: var(--mono);
+    }
+
+    label strong { color: var(--text); font-weight: 400; }
+
+    .input-wrap {
+      display: flex;
+      align-items: center;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      transition: border-color .2s;
+    }
+    .input-wrap:focus-within { border-color: var(--accent); }
+
+    input[type="number"] {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 1rem;
+      padding: .6rem .8rem;
+      width: 100%;
+      -moz-appearance: textfield;
+    }
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+    .unit {
+      font-family: var(--mono);
+      font-size: .8rem;
+      color: var(--muted);
+      padding: .6rem .8rem;
+      background: var(--bg3);
+      white-space: nowrap;
+      border-left: 1px solid var(--border);
+    }
+
+    .slider-wrap {
+      display: flex;
+      align-items: center;
+      gap: .8rem;
+      margin-top: .5rem;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      flex: 1;
+      height: 4px;
+      background: var(--border);
+      border-radius: 99px;
+      outline: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+    }
+
+    .slider-val {
+      font-family: var(--mono);
+      font-size: .85rem;
+      color: var(--accent);
+      min-width: 3.5rem;
+      text-align: right;
+    }
+
+    .vg-pg-row {
+      display: flex;
+      gap: .5rem;
+      margin-top: .8rem;
+    }
+
+    .ratio-btn {
+      flex: 1;
+      font-family: var(--mono);
+      font-size: .75rem;
+      padding: .4rem;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all .15s;
+      text-align: center;
+    }
+    .ratio-btn:hover { color: var(--text); border-color: #444; }
+    .ratio-btn.active { background: rgba(224,122,95,.15); border-color: var(--accent); color: var(--accent); }
+
+    /* RESULTS */
+    .results-panel { position: sticky; top: 76px; }
+
+    .result-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--border);
+      gap: 1rem;
+    }
+    .result-item:last-child { border-bottom: none; padding-bottom: 0; }
+
+    .result-label {
+      display: flex;
+      align-items: center;
+      gap: .7rem;
+      font-size: .9rem;
+    }
+
+    .result-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .result-value {
+      font-family: var(--mono);
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .result-pct {
+      font-family: var(--mono);
+      font-size: .75rem;
+      color: var(--muted);
+      text-align: right;
+    }
+
+    .bar-track {
+      height: 6px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+      margin-top: 1.4rem;
+      margin-bottom: .4rem;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 99px;
+      display: flex;
+      overflow: hidden;
+    }
+
+    .bar-seg { height: 100%; transition: width .4s ease; }
+
+    .bar-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .8rem;
+      margin-top: .8rem;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      font-family: var(--mono);
+      font-size: .72rem;
+      color: var(--muted);
+    }
+
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+    .warning {
+      background: rgba(224,122,95,.1);
+      border: 1px solid rgba(224,122,95,.3);
+      border-radius: 6px;
+      padding: .8rem 1rem;
+      font-family: var(--mono);
+      font-size: .78rem;
+      color: var(--accent);
+      margin-top: 1rem;
+      display: none;
+    }
+    .warning.visible { display: block; }
+
+    .total-check {
+      margin-top: 1.2rem;
+      padding: .8rem;
+      background: var(--bg3);
+      border-radius: 6px;
+      font-family: var(--mono);
+      font-size: .78rem;
+      color: var(--muted);
+      text-align: center;
+    }
+    .total-check .ok { color: var(--green); }
+
+    footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 1.5rem clamp(1.5rem, 6vw, 8rem);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    footer a { font-family: var(--mono); font-size: .78rem; color: var(--muted); text-decoration: none; }
+    footer a:hover { color: var(--text); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="../../index.html" class="nav-logo">~<span>/</span>mtourneur</a>
+  <a href="../../index.html#tools" class="nav-back">← outils</a>
+</nav>
+
+<main>
+  <div class="page-header">
+    <div class="page-tag">// outil #1</div>
+    <h1>🧪 Calculateur DIY Vape</h1>
+    <p class="page-desc">Calcule précisément les volumes de chaque ingrédient pour ta recette e-liquide maison. Résultats en temps réel.</p>
+  </div>
+
+  <div class="calculator">
+    <!-- INPUTS -->
+    <div class="panel">
+      <div class="panel-title">Paramètres de la recette</div>
+
+      <div class="field">
+        <label><strong>Taille du flacon</strong></label>
+        <div class="input-wrap">
+          <input type="number" id="volume" value="100" min="10" max="1000" step="10">
+          <span class="unit">mL</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label><strong>Nicotine cible</strong></label>
+        <div class="input-wrap">
+          <input type="number" id="nicTarget" value="3" min="0" max="20" step="0.5">
+          <span class="unit">mg/mL</span>
+        </div>
+        <div class="slider-wrap">
+          <input type="range" id="nicSlider" min="0" max="20" step="0.5" value="3">
+          <span class="slider-val" id="nicSliderVal">3 mg</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label><strong>Concentration base nicotinée</strong></label>
+        <div class="input-wrap">
+          <input type="number" id="nicBase" value="20" min="1" max="72" step="1">
+          <span class="unit">mg/mL</span>
+        </div>
+        <div class="vg-pg-row" style="margin-top:.5rem">
+          <button class="ratio-btn" data-base="20" onclick="setBase(20)">20 mg</button>
+          <button class="ratio-btn" data-base="18" onclick="setBase(18)">18 mg</button>
+          <button class="ratio-btn" data-base="72" onclick="setBase(72)">72 mg</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label><strong>Arôme</strong></label>
+        <div class="slider-wrap">
+          <input type="range" id="aromaSlider" min="0" max="25" step="0.5" value="10">
+          <span class="slider-val" id="aromaSliderVal">10 %</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label><strong>Ratio VG/PG final</strong></label>
+        <div class="slider-wrap">
+          <input type="range" id="vgSlider" min="0" max="100" step="5" value="70">
+          <span class="slider-val" id="vgSliderVal">70/30</span>
+        </div>
+        <div class="vg-pg-row">
+          <button class="ratio-btn" onclick="setRatio(50)">50/50</button>
+          <button class="ratio-btn" onclick="setRatio(60)">60/40</button>
+          <button class="ratio-btn active" onclick="setRatio(70)">70/30</button>
+          <button class="ratio-btn" onclick="setRatio(80)">80/20</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label><strong>Ratio base nicotinée (VG)</strong> <span style="color:#555">— généralement PG</span></label>
+        <div class="vg-pg-row">
+          <button class="ratio-btn active" onclick="setBaseRatio(0)">100% PG</button>
+          <button class="ratio-btn" onclick="setBaseRatio(50)">50/50</button>
+          <button class="ratio-btn" onclick="setBaseRatio(100)">100% VG</button>
+        </div>
+        <input type="hidden" id="baseVgPct" value="0">
+      </div>
+    </div>
+
+    <!-- RESULTS -->
+    <div class="panel results-panel">
+      <div class="panel-title">Résultats</div>
+
+      <div class="result-item">
+        <div class="result-label">
+          <span class="result-dot" style="background:#E07A5F"></span>
+          Base nicotinée
+        </div>
+        <div style="text-align:right">
+          <div class="result-value" id="r-nic">—</div>
+          <div class="result-pct" id="r-nic-pct">—</div>
+        </div>
+      </div>
+
+      <div class="result-item">
+        <div class="result-label">
+          <span class="result-dot" style="background:#5f8be0"></span>
+          Arôme
+        </div>
+        <div style="text-align:right">
+          <div class="result-value" id="r-aroma">—</div>
+          <div class="result-pct" id="r-aroma-pct">—</div>
+        </div>
+      </div>
+
+      <div class="result-item">
+        <div class="result-label">
+          <span class="result-dot" style="background:#3ddc84"></span>
+          VG pur
+        </div>
+        <div style="text-align:right">
+          <div class="result-value" id="r-vg">—</div>
+          <div class="result-pct" id="r-vg-pct">—</div>
+        </div>
+      </div>
+
+      <div class="result-item">
+        <div class="result-label">
+          <span class="result-dot" style="background:#e0c45f"></span>
+          PG pur
+        </div>
+        <div style="text-align:right">
+          <div class="result-value" id="r-pg">—</div>
+          <div class="result-pct" id="r-pg-pct">—</div>
+        </div>
+      </div>
+
+      <div class="bar-track">
+        <div class="bar-fill" id="bar">
+          <div class="bar-seg" id="bar-nic" style="background:#E07A5F;width:0%"></div>
+          <div class="bar-seg" id="bar-aroma" style="background:#5f8be0;width:0%"></div>
+          <div class="bar-seg" id="bar-vg" style="background:#3ddc84;width:0%"></div>
+          <div class="bar-seg" id="bar-pg" style="background:#e0c45f;width:0%"></div>
+        </div>
+      </div>
+
+      <div class="bar-legend">
+        <span class="legend-item"><span class="legend-dot" style="background:#E07A5F"></span>Base nic</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#5f8be0"></span>Arôme</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#3ddc84"></span>VG</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#e0c45f"></span>PG</span>
+      </div>
+
+      <div class="warning" id="warning">
+        ⚠ Impossible d'atteindre ce ratio VG avec ces paramètres. Augmente le VG cible ou réduis l'arôme.
+      </div>
+
+      <div class="total-check" id="total-check">
+        <span id="total-txt">—</span>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <span style="font-family:var(--mono);font-size:.78rem;color:var(--muted)">Calcul basé sur les volumes — base nicotinée supposée en PG par défaut</span>
+  <a href="../../index.html">← retour</a>
+</footer>
+
+<script>
+  let baseVgPct = 0;
+
+  function val(id) { return parseFloat(document.getElementById(id).value) || 0; }
+  function set(id, v) { document.getElementById(id).textContent = v; }
+
+  function round1(n) { return Math.round(n * 10) / 10; }
+
+  function calculate() {
+    const V = val('volume');
+    const Ntarget = val('nicTarget');
+    const Nbase = val('nicBase');
+    const aromaPct = val('aromaSlider');
+    const vgPct = val('vgSlider');
+    const pgPct = 100 - vgPct;
+
+    if (V <= 0 || Nbase <= 0) return;
+
+    const Vnic = Ntarget > 0 ? (Ntarget * V) / Nbase : 0;
+    const Varoma = (aromaPct / 100) * V;
+
+    // VG/PG contribution de la base nic
+    const Vnic_vg = Vnic * (baseVgPct / 100);
+    const Vnic_pg = Vnic * (1 - baseVgPct / 100);
+    // Arôme supposé en PG
+    const Varoma_pg = Varoma;
+
+    // VG total voulu
+    const Vvg_total = (vgPct / 100) * V;
+    // PG total voulu
+    const Vpg_total = (pgPct / 100) * V;
+
+    const Vvg_pur = Vvg_total - Vnic_vg;
+    const Vpg_pur = Vpg_total - Vnic_pg - Varoma_pg;
+
+    const warning = document.getElementById('warning');
+
+    if (Vvg_pur < -0.05 || Vpg_pur < -0.05) {
+      warning.classList.add('visible');
+    } else {
+      warning.classList.remove('visible');
+    }
+
+    const vvg = Math.max(0, round1(Vvg_pur));
+    const vpg = Math.max(0, round1(Vpg_pur));
+    const vnic = round1(Vnic);
+    const varoma = round1(Varoma);
+
+    set('r-nic', vnic + ' mL');
+    set('r-nic-pct', round1(vnic / V * 100) + '%');
+    set('r-aroma', varoma + ' mL');
+    set('r-aroma-pct', aromaPct + '%');
+    set('r-vg', vvg + ' mL');
+    set('r-vg-pct', round1(vvg / V * 100) + '%');
+    set('r-pg', vpg + ' mL');
+    set('r-pg-pct', round1(vpg / V * 100) + '%');
+
+    const total = round1(vnic + varoma + vvg + vpg);
+    const totalEl = document.getElementById('total-txt');
+    if (Math.abs(total - V) < 0.5) {
+      totalEl.innerHTML = `<span class="ok">✓ Total : ${total} mL</span>`;
+    } else {
+      totalEl.innerHTML = `Total : ${total} mL (cible : ${V} mL)`;
+    }
+
+    // Barres
+    document.getElementById('bar-nic').style.width = (vnic / V * 100) + '%';
+    document.getElementById('bar-aroma').style.width = (varoma / V * 100) + '%';
+    document.getElementById('bar-vg').style.width = (vvg / V * 100) + '%';
+    document.getElementById('bar-pg').style.width = (vpg / V * 100) + '%';
+  }
+
+  // Sync sliders <-> inputs
+  const nicSlider = document.getElementById('nicSlider');
+  const nicTarget = document.getElementById('nicTarget');
+  nicSlider.addEventListener('input', () => {
+    nicTarget.value = nicSlider.value;
+    document.getElementById('nicSliderVal').textContent = nicSlider.value + ' mg';
+    calculate();
+  });
+  nicTarget.addEventListener('input', () => {
+    nicSlider.value = nicTarget.value;
+    document.getElementById('nicSliderVal').textContent = nicTarget.value + ' mg';
+    calculate();
+  });
+
+  document.getElementById('aromaSlider').addEventListener('input', function() {
+    document.getElementById('aromaSliderVal').textContent = this.value + ' %';
+    calculate();
+  });
+
+  document.getElementById('vgSlider').addEventListener('input', function() {
+    document.getElementById('vgSliderVal').textContent = this.value + '/' + (100 - this.value);
+    // Update active ratio btn
+    document.querySelectorAll('.vg-pg-row .ratio-btn').forEach(b => b.classList.remove('active'));
+    calculate();
+  });
+
+  document.getElementById('nicBase').addEventListener('input', calculate);
+  document.getElementById('volume').addEventListener('input', calculate);
+
+  function setBase(v) {
+    document.getElementById('nicBase').value = v;
+    document.querySelectorAll('[data-base]').forEach(b => b.classList.remove('active'));
+    document.querySelector('[data-base="' + v + '"]').classList.add('active');
+    calculate();
+  }
+
+  function setRatio(vg) {
+    document.getElementById('vgSlider').value = vg;
+    document.getElementById('vgSliderVal').textContent = vg + '/' + (100 - vg);
+    document.querySelectorAll('.vg-pg-row .ratio-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    calculate();
+  }
+
+  function setBaseRatio(vg) {
+    baseVgPct = vg;
+    document.querySelectorAll('.field:last-child .ratio-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    calculate();
+  }
+
+  calculate();
+</script>
+</body>
+</html>
