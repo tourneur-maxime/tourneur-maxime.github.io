@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -90,7 +90,7 @@
     /* ── HERO ── */
     #hero {
       position: relative;
-      min-height: 100vh;
+      min-height: 85vh;
       display: flex;
       align-items: center;
       padding: 0 clamp(2rem, 8vw, 10rem);
@@ -239,6 +239,8 @@
       font-size: .95rem;
       margin-bottom: 3rem;
     }
+
+    #projects { padding-top: 3rem; }
 
     /* ── PROJECTS ── */
     .projects-grid {
@@ -441,8 +443,8 @@
 <nav>
   <a href="/" class="nav-logo">~<span>/</span>tourneurmaxime</a>
   <ul>
-    <li><a href="#projects">projets</a></li>
-    <li><a href="#tools">outils</a></li>
+    <li><a href="#projects">projects</a></li>
+    <li><a href="#tools">tools</a></li>
     <li><a href="https://github.com/tourneurmaxime" target="_blank">github</a></li>
   </ul>
 </nav>
@@ -450,20 +452,20 @@
 <!-- HERO -->
 <section id="hero">
   <div class="hero-inner">
-    <div class="hero-prefix">online &amp; disponible</div>
+    <div class="hero-prefix">online &amp; available</div>
     <h1>Maxime Tourneur<span class="cursor"></span></h1>
     <p class="hero-desc">
-      Je construis des <strong>systèmes agentiques</strong> et des <strong>outils pour développeurs</strong>.
-      Passionné par l'IA locale, les architectures event-driven et les interfaces qui font gagner du temps.
+      I build <strong>agentic systems</strong> and <strong>developer tools</strong>.
+      Passionate about local AI, event-driven architectures, and interfaces that save time.
     </p>
     <div class="btn-group">
-      <a href="#tools" class="btn btn-primary">▶ Voir les outils</a>
+      <a href="#tools" class="btn btn-primary">▶ View tools</a>
       <a href="https://github.com/tourneurmaxime" target="_blank" class="btn btn-ghost">GitHub →</a>
     </div>
     <div class="hero-stats">
       <div class="stat-item">
         <span class="stat-value">3+</span>
-        <span class="stat-label">outils en prod</span>
+        <span class="stat-label">tools in prod</span>
       </div>
       <div class="stat-item">
         <span class="stat-value">local</span>
@@ -479,15 +481,15 @@
 
 <!-- PROJECTS -->
 <section id="projects">
-  <div class="section-label">projets</div>
-  <h2>Ce que je construis</h2>
-  <p class="section-sub">Des projets open-source, locaux et orientés productivité.</p>
+  <div class="section-label">projects</div>
+  <h2>What I build</h2>
+  <p class="section-sub">Open-source, local-first, productivity-focused projects.</p>
 
   <div class="projects-grid">
     <div class="project-card">
       <span class="project-tag">featured</span>
       <h3>MaxOS</h3>
-      <p>Un OS agentique local-first : interface Nuxt pilotant des sous-agents Claude CLI via PTY. Kanban, skills, mémoire persistante, remote control via JWT.</p>
+      <p>A local-first agentic OS: Nuxt interface driving Claude CLI sub-agents via PTY. Kanban, skills, persistent memory, remote control via JWT.</p>
       <div class="project-tech">
         <span class="tech-pill">TypeScript</span>
         <span class="tech-pill">Nuxt 3</span>
@@ -496,7 +498,7 @@
         <span class="tech-pill">Claude CLI</span>
       </div>
       <div class="project-links">
-        <a href="https://tourneur-maxime.github.io/max_ai_os/" target="_blank" class="project-link demo">▶ Démo live</a>
+        <a href="https://tourneur-maxime.github.io/max_ai_os/" target="_blank" class="project-link demo">▶ Live demo</a>
         <a href="https://github.com/tourneur-maxime/max_ai_os" target="_blank" class="project-link code">Code ↗</a>
       </div>
     </div>
@@ -504,7 +506,7 @@
     <div class="project-card">
       <span class="project-tag">app</span>
       <h3>My Office</h3>
-      <p>Outil de gestion freelance : clients, prospects, devis, factures et templates. Interface Vue 3 + Inertia.js sur backend Laravel. Thème sombre, KPIs configurables, génération PDF.</p>
+      <p>Freelance management tool: clients, prospects, quotes, invoices and templates. Vue 3 + Inertia.js frontend on a Laravel backend. Dark theme, configurable KPIs, PDF generation.</p>
       <div class="project-tech">
         <span class="tech-pill">Laravel</span>
         <span class="tech-pill">Vue 3</span>
@@ -512,7 +514,7 @@
         <span class="tech-pill">Tailwind</span>
       </div>
       <div class="project-links">
-        <a href="https://tourneur-maxime.github.io/My_Office/" target="_blank" class="project-link demo">▶ Démo live</a>
+        <a href="https://tourneur-maxime.github.io/My_Office/" target="_blank" class="project-link demo">▶ Live demo</a>
         <a href="https://github.com/tourneur-maxime/My_Office" target="_blank" class="project-link code">Code ↗</a>
       </div>
     </div>
@@ -521,22 +523,22 @@
 
 <!-- TOOLS -->
 <section id="tools">
-  <div class="section-label">outils</div>
+  <div class="section-label">tools</div>
   <h2>Tools</h2>
-  <p class="section-sub">Des outils que j'utilise ou que j'aurais aimé trouver tout faits.</p>
+  <p class="section-sub">Tools I use or wished I could have found ready-made.</p>
 
   <div class="tools-grid">
     <a href="tools/vape/index.html" class="tool-card">
       <div class="tool-icon">🧪</div>
-      <h3>Calculateur DIY Vape</h3>
-      <p>Calcule les volumes exacts de base nicotinée, d'arôme, VG et PG pour ta recette e-liquide. Taux de nicotine et ratio personnalisables.</p>
-      <span class="tool-link">Ouvrir l'outil →</span>
+      <h3>DIY Vape Calculator</h3>
+      <p>Calculates exact volumes of nicotine base, flavoring, VG and PG for your e-liquid recipe. Customizable nicotine level and ratio.</p>
+      <span class="tool-link">Open tool →</span>
     </a>
 
     <div class="tool-card">
       <div class="tool-icon">🔨</div>
       <h3>Hammerspoon Config</h3>
-      <p>Gestionnaire de fenêtres intelligent pour macOS triple-écran. Organisation automatique, raccourcis clavier, sauvegarde/restauration de layouts par config moniteurs.</p>
+      <p>Smart window manager for triple-screen macOS. Automatic layout, keyboard shortcuts, save/restore layouts per monitor configuration.</p>
       <div style="display:flex;gap:.6rem;margin-top:auto;flex-wrap:wrap;">
         <a href="https://www.hammerspoon.org" target="_blank" class="tool-link">hammerspoon.org ↗</a>
         <a href="https://github.com/tourneur-maxime/hammerspoon_cfg" target="_blank" class="tool-link">Ma config ↗</a>
@@ -545,9 +547,9 @@
 
     <div class="tool-card tool-card-placeholder">
       <div class="tool-icon">+</div>
-      <h3>Bientôt</h3>
-      <p>Un prochain outil en cours de construction.</p>
-      <span class="tool-link">en construction…</span>
+      <h3>Coming soon</h3>
+      <p>Another tool currently in the making.</p>
+      <span class="tool-link">in progress…</span>
     </div>
   </div>
 </section>
