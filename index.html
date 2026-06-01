@@ -90,7 +90,7 @@
     /* ── HERO ── */
     #hero {
       position: relative;
-      min-height: 85vh;
+      min-height: 70vh;
       display: flex;
       align-items: center;
       padding: 0 clamp(2rem, 8vw, 10rem);
@@ -240,7 +240,7 @@
       margin-bottom: 3rem;
     }
 
-    #projects { padding-top: 2rem; }
+    #projects { padding-top: 1rem; }
 
     /* ── PROJECTS ── */
     .projects-grid {
@@ -289,6 +289,8 @@
       display: inline-block;
       margin-bottom: 1rem;
     }
+
+    .project-card .tool-icon { margin-bottom: .8rem; }
 
     .project-card h3 {
       font-size: 1.15rem;
@@ -489,7 +491,7 @@
 
   <div class="projects-grid">
     <div class="project-card">
-      <span class="project-tag">featured</span>
+      <div class="tool-icon">🤖</div>
       <h3>MaxOS</h3>
       <p>A local-first agentic OS: Nuxt interface driving Claude CLI sub-agents via PTY. Kanban, skills, persistent memory, remote control via JWT.</p>
       <div class="project-tech">
@@ -506,7 +508,7 @@
     </div>
 
     <div class="project-card">
-      <span class="project-tag">app</span>
+      <div class="tool-icon">💼</div>
       <h3>My Office</h3>
       <p>Freelance management tool: clients, prospects, quotes, invoices and templates. Vue 3 + Inertia.js frontend on a Laravel backend. Dark theme, configurable KPIs, PDF generation.</p>
       <div class="project-tech">
